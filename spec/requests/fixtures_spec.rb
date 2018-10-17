@@ -23,17 +23,26 @@ RSpec.describe Fixture, type: :request do
   end
 
   let(:league_id) { league.id }
+
   let(:team_id) { team.first.id }
+
   let(:fixture_id) { fixtures.first.id }
+
   let(:fixture_params) {
     {
-        "home_team": team.last.id,
-        "away_team": team.first.id,
-        "league_id": league.id,
-        "season": "2017/2018",
-        "match_day": "2018-09-09",
+      fixtures: [
+        {
+            "home_team": team.last.id,
+            "away_team": team.first.id,
+            "league_id": league.id,
+            "season": "2017/2018",
+            "match_day": "2018-09-09"
+        }
+      ]
     }
   }
+
+  let(:games) { fixture_params.size }
 
   describe "POST /league/:league_id/fixtures" do
     context "when the request is valid" do
@@ -45,7 +54,7 @@ RSpec.describe Fixture, type: :request do
       end
 
       it "creates a new fixture" do
-        expect(json.size).to eq 11
+        expect(json["message"]).to eq("#{games} games successfully created")
       end
 
       it "returns status code 201" do
